@@ -44,7 +44,7 @@ export const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-[#15c2cf] mb-4 text-white py-3 px-6 rounded-[100px] font-thin hover:bg-[#13aeb9] focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
+              className="w-full bg-[#06B1CF] mb-4 text-white py-2 px-6 rounded-[100px] font-thin hover:bg-[#13aeb9] focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
             >
               Log In
             </button>

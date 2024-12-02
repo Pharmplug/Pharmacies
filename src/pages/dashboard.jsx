@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { XCircle, MapPin, Plus, XIcon } from 'lucide-react';
+import {  MapPin, Plus, XIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Local component implementations to replace @components
 const Modal = ({ open, onClose, children }) => {
@@ -90,8 +91,9 @@ const Button = ({ children, onClick, className, variant }) => {
 };
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [products, setProducts] = useState([
+  const [products,] = useState([
     { id: 1, name: 'Triple Action Toothpaste', category: 'Tooth Care', price: 6700, dateCreated: '2024-05-02', dateUpdated: '2024-05-02', brand: 'Sensodyne' },
     { id: 2, name: 'Triple Action Toothpaste', category: 'Tooth Care', price: 6700, dateCreated: '2024-05-02', dateUpdated: '2024-05-02', brand: 'Sensodyne' },
     { id: 3, name: 'Triple Action Toothpaste', category: 'Tooth Care', price: 6700, dateCreated: '2024-05-02', dateUpdated: '2024-05-02', brand: 'Sensodyne' },
@@ -108,6 +110,10 @@ export const Dashboard = () => {
   const handleSave = (e) => {
     // e.preventDefault();
     setShowModal(false);
+  };
+  const handleLogout = (e) => {
+    // e.preventDefault();
+    navigate('/login');
   };
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -129,7 +135,7 @@ export const Dashboard = () => {
           <div className='bg-[#80BBFF] w-full h-[1px] mt-4'></div>
         </div>
 
-        <div>
+        <div className='flex items-center justify-between w-full'>
         <div className='flex items-center'>
           <div className='border border-white bg-[#8CD50A] rounded-[100px] mr-1'>
             <img src="/package.png" alt="PharmPlug Logo" className="w-6 text-black m-1" />
@@ -144,7 +150,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        
+        <img onClick={handleLogout} src="/exit.svg" alt="PharmPlug Logo" className="w-6 text-black m-1" />
         </div>
 
 
