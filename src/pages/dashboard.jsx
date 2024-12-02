@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaInfo, FaTrash, FaCalendarAlt, FaChevronDown } from "react-icons/fa";
 
 // Local component implementations to replace @components
-const Modal = ({ open, onClose, children }) => {
+const Modal = ({ open, children }) => {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -33,37 +33,8 @@ const ModalFooter = ({ children }) => (
   </div>
 );
 
-const Table = ({ children }) => (
-  <div className="bg-white shadow-md rounded-lg overflow-hidden">
-    {children}
-  </div>
-);
 
-const TableHeader = ({ children }) => (
-  <div className="bg-gray-100">
-    <div className="flex">
-      {children}
-    </div>
-  </div>
-);
 
-const TableBody = ({ children }) => (
-  <div>
-    {children}
-  </div>
-);
-
-const TableRow = ({ children, key }) => (
-  <div key={key} className="flex border-b last:border-b-0 hover:bg-gray-50">
-    {children}
-  </div>
-);
-
-const TableCell = ({ children }) => (
-  <div className="flex-1 p-4 text-sm text-gray-600">
-    {children}
-  </div>
-);
 
 const Input = ({ type, placeholder, value, onChange, className }) => (
   <input
@@ -108,7 +79,9 @@ export const Dashboard = () => {
     { id: 11, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
     { id: 12, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
   ]);
-
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -116,10 +89,10 @@ export const Dashboard = () => {
   // Calculate the displayed items
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   // Total pages
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   // Handlers for pagination
   const handleNext = () => {
@@ -150,20 +123,18 @@ export const Dashboard = () => {
     // e.preventDefault();
     navigate('/login');
   };
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
 
   return (
     <div className="flex h-screen">
       <div className="bg-[#06B1CF] w-64 flex flex-col justify-between items-center py-8 px-2">
         <div className='items-center w-full'>
           <div className="bg-white  rounded-[3px] w-full">
-            <img src="/logo.svg"  className="w-32 h-12 my-2" />
+            <img src="/logo.svg" alt={""} className="w-32 h-12 my-2" />
           </div>
 
           <div className="bg-[#8CD50A] rounded-[3px] px-6 py-4 w-full flex">
-            <img src="/package.png"  className="w-6 mr-4" />
+            <img src="/package.png"  alt={""} className="w-6 mr-4" />
             <h3 className="text-white font-normal">Products</h3>
 
           </div>
@@ -173,7 +144,7 @@ export const Dashboard = () => {
         <div className='flex items-center justify-between w-full'>
         <div className='flex items-center'>
           <div className='border border-white bg-[#8CD50A] rounded-[100px] mr-1'>
-            <img src="/package.png"  className="w-6 text-black m-1" />
+            <img src="/package.png" alt={""} className="w-6 text-black m-1" />
           </div>
 
           <div>
@@ -185,7 +156,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <img onClick={handleLogout}   className="w-6 text-black m-1" />
+        <img onClick={handleLogout} alt={""} className="w-6 text-black m-1" />
         </div>
 
 
@@ -195,7 +166,7 @@ export const Dashboard = () => {
           <p></p>
           <div className='flex items-center'>
             <div className='border border-white bg-[#8CD50A] rounded-[100px] mr-1'>
-              <img src="/package.png"  className="w-6 text-black m-1" />
+              <img src="/package.png" alt={""} className="w-6 text-black m-1" />
             </div>
 
             <div>
@@ -275,28 +246,28 @@ export const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {currentItems.map((product) => (
+          {currentItems.map((filteredProducts) => (
             <tr
-              key={product.id}
+              key={filteredProducts.id}
               className="hover:bg-gray-50 cursor-pointer"
-              onClick={() => alert(`Clicked on product ID: ${product.id}`)}
+              onClick={() => alert(`Clicked on product ID: ${filteredProducts.id}`)}
             >
               <td className="p-2 border border-gray-300">
                 <input type="checkbox" />
               </td>
               <td className="p-2 border border-gray-300 flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gray-200 rounded"></div>
-                <span className='text-xs text-black'>{product.name}</span>
+                <span className='text-xs text-black'>{filteredProducts.name}</span>
               </td>
               <td className="p-2 border border-gray-300">
                 <span className="px-2 py-1 text-xs text-main bg-[#CDEFF5] rounded-full">
-                  • {product.category}
+                  • {filteredProducts.category}
                 </span>
               </td>
-              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">₦{product.price.toLocaleString()}</td>
-              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{product.dateCreated}</td>
-              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{product.dateUpdated}</td>
-              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{product.brand}</td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">₦{filteredProducts.price.toLocaleString()}</td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{filteredProducts.dateCreated}</td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{filteredProducts.dateUpdated}</td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{filteredProducts.brand}</td>
               <td className="p-2 border border-gray-300 flex space-x-2">
                 <button className="text-blue-500 hover:underline">
                   <FaInfo />
@@ -363,7 +334,6 @@ export const Dashboard = () => {
         </ModalHeader>
         <ModalBody>
           <form onSubmit={handleSave} className="w-full">
-
             <div className="mb-4">
               <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-xs">
                 Product Name
@@ -414,7 +384,7 @@ export const Dashboard = () => {
             <div className='flex items-center justify-between mt-8'>
               <div className='flex items-center'>
                 <div className='bg-gray-200 rounded-[100px] p-2 mr-2'>
-                  <img src="/upload.svg"  className='text-white w-5' />
+                  <img src="/upload.svg" alt={""} className='text-white w-5' />
 
                 </div>
                 <div className='items-center'>
