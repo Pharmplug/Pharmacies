@@ -12,11 +12,11 @@ export const Login = () => {
   return (
     <div className="flex h-screen">
       <div className="bg-[#15c2cf] flex-3 flex items-center justify-center">
-        <img src="/medical-cart.svg" alt="Medication Image" className="max-w-[600px]" />
+        <img src="/medical-cart.svg"  className="max-w-[600px]" />
       </div>
       <div className="bg-[#CDEFF5] flex-1 flex items-center justify-center">
         <div className="bg-white w-full max-w-[400px] px-6 py-4 shadow-lg rounded-[24px] flex flex-col items-center justify-center">
-          <img src="/logo.svg" alt="Medication Image" className="w-64  mb-20" />
+          <img src="/logo.svg"  className="w-64  mb-20" />
           <form onSubmit={handleLogin} className="w-full">
             <div className="mb-4">
               <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-sm">

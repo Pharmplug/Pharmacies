@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {  MapPin, Plus, XIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { FaInfo, FaTrash, FaCalendarAlt, FaChevronDown } from "react-icons/fa";
 
 // Local component implementations to replace @components
 const Modal = ({ open, onClose, children }) => {
@@ -93,11 +94,45 @@ const Button = ({ children, onClick, className, variant }) => {
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [products,] = useState([
-    { id: 1, name: 'Triple Action Toothpaste', category: 'Tooth Care', price: 6700, dateCreated: '2024-05-02', dateUpdated: '2024-05-02', brand: 'Sensodyne' },
-    { id: 2, name: 'Triple Action Toothpaste', category: 'Tooth Care', price: 6700, dateCreated: '2024-05-02', dateUpdated: '2024-05-02', brand: 'Sensodyne' },
-    { id: 3, name: 'Triple Action Toothpaste', category: 'Tooth Care', price: 6700, dateCreated: '2024-05-02', dateUpdated: '2024-05-02', brand: 'Sensodyne' },
+  const [products] = useState( [
+    { id: 1, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 2, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 3, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 4, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 5, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 6, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 7, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 8, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 9, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 10, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 11, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+    { id: 12, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
   ]);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Calculate the displayed items
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Total pages
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  // Handlers for pagination
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleAddProduct = () => {
@@ -124,11 +159,11 @@ export const Dashboard = () => {
       <div className="bg-[#06B1CF] w-64 flex flex-col justify-between items-center py-8 px-2">
         <div className='items-center w-full'>
           <div className="bg-white  rounded-[3px] w-full">
-            <img src="/logo.svg" alt="PharmPlug Logo" className="w-32 h-12 my-2" />
+            <img src="/logo.svg"  className="w-32 h-12 my-2" />
           </div>
 
           <div className="bg-[#8CD50A] rounded-[3px] px-6 py-4 w-full flex">
-            <img src="/package.png" alt="PharmPlug Logo" className="w-6 mr-4" />
+            <img src="/package.png"  className="w-6 mr-4" />
             <h3 className="text-white font-normal">Products</h3>
 
           </div>
@@ -138,7 +173,7 @@ export const Dashboard = () => {
         <div className='flex items-center justify-between w-full'>
         <div className='flex items-center'>
           <div className='border border-white bg-[#8CD50A] rounded-[100px] mr-1'>
-            <img src="/package.png" alt="PharmPlug Logo" className="w-6 text-black m-1" />
+            <img src="/package.png"  className="w-6 text-black m-1" />
           </div>
 
           <div>
@@ -150,7 +185,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <img onClick={handleLogout} src="/exit.svg" alt="PharmPlug Logo" className="w-6 text-black m-1" />
+        <img onClick={handleLogout}   className="w-6 text-black m-1" />
         </div>
 
 
@@ -160,7 +195,7 @@ export const Dashboard = () => {
           <p></p>
           <div className='flex items-center'>
             <div className='border border-white bg-[#8CD50A] rounded-[100px] mr-1'>
-              <img src="/package.png" alt="PharmPlug Logo" className="w-6 text-black m-1" />
+              <img src="/package.png"  className="w-6 text-black m-1" />
             </div>
 
             <div>
@@ -205,30 +240,109 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Date Created</TableCell>
-              <TableCell>Date Updated</TableCell>
-              <TableCell>Brand</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredProducts.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.category}</TableCell>
-                <TableCell>₦{product.price.toLocaleString()}</TableCell>
-                <TableCell>{product.dateCreated}</TableCell>
-                <TableCell>{product.dateUpdated}</TableCell>
-                <TableCell>{product.brand}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <div className="p-4">
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="p-2 border border-gray-300">
+              <input type="checkbox" />
+            </th>
+            <th className="p-2 border border-gray-300 flex items-center space-x-2">
+              <span>Products</span>
+              <FaChevronDown className="text-gray-500" />
+            </th>
+            <th className="p-2 border border-gray-300 flex items-center space-x-2">
+              <span>Products Category</span>
+              <FaChevronDown className="text-gray-500" />
+            </th>
+            <th className="p-2 border border-gray-300 flex items-center space-x-2">
+              <span>Pricing</span>
+              <FaChevronDown className="text-gray-500" />
+            </th>
+            <th className="p-2 border border-gray-300 flex items-center space-x-2">
+              <FaCalendarAlt className="text-gray-500" />
+              <span>Date Created</span>
+            </th>
+            <th className="p-2 border border-gray-300 flex items-center space-x-2">
+              <FaCalendarAlt className="text-gray-500" />
+              <span>Date Updated</span>
+            </th>
+            <th className="p-2 border border-gray-300 flex items-center space-x-2">
+              <span>Brand</span>
+              <FaChevronDown className="text-gray-500" />
+            </th>
+            <th className="p-2 border border-gray-300">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentItems.map((product) => (
+            <tr
+              key={product.id}
+              className="hover:bg-gray-50 cursor-pointer"
+              onClick={() => alert(`Clicked on product ID: ${product.id}`)}
+            >
+              <td className="p-2 border border-gray-300">
+                <input type="checkbox" />
+              </td>
+              <td className="p-2 border border-gray-300 flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                <span className='text-xs text-black'>{product.name}</span>
+              </td>
+              <td className="p-2 border border-gray-300">
+                <span className="px-2 py-1 text-xs text-main bg-[#CDEFF5] rounded-full">
+                  • {product.category}
+                </span>
+              </td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">₦{product.price.toLocaleString()}</td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{product.dateCreated}</td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{product.dateUpdated}</td>
+              <td className="p-2 border border-gray-300 text-sm font-thin text-[#667185]">{product.brand}</td>
+              <td className="p-2 border border-gray-300 flex space-x-2">
+                <button className="text-blue-500 hover:underline">
+                  <FaInfo />
+                </button>
+                <button className="text-red-500 hover:underline">
+                  <FaTrash />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-4">
+        <button
+          className="px-3 py-1  bg-transparent border  border-gray-400 text-xs rounded disabled:opacity-50"
+          onClick={handlePrevious}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <div className="flex space-x-2">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              className={`px-3 py-1 rounded ${
+                currentPage === index + 1
+                  ? "bg-transparent border border-secondary border-[1.5px] text-gray-600 text-xs font-normal"
+                  : "bg-transparent text-gray-400 text-xs "
+              }`}
+              onClick={() => handlePageClick(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+        <button
+          className="px-3 py-1 bg-transparent border  border-gray-400 text-xs rounded disabled:opacity-50"
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
+    </div>
 
       </div>
 
@@ -300,7 +414,7 @@ export const Dashboard = () => {
             <div className='flex items-center justify-between mt-8'>
               <div className='flex items-center'>
                 <div className='bg-gray-200 rounded-[100px] p-2 mr-2'>
-                  <img src="/upload.svg" alt="" className='text-white w-5' />
+                  <img src="/upload.svg"  className='text-white w-5' />
 
                 </div>
                 <div className='items-center'>

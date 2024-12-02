@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Add custom colors
+        'main':'#06B1CF',
+        'secondary':'#8CD50A',
         'brand-teal': '#00A896',
         'brand-navy': '#022B3A',
       },
