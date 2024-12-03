@@ -79,6 +79,7 @@ export const Dashboard = () => {
     { id: 11, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
     { id: 12, name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
   ]);
+  const [searchTerm, setSearchTerm] = useState('');
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -106,7 +107,7 @@ export const Dashboard = () => {
   const handlePageClick = (page) => {
     setCurrentPage(page);
   };
-  const [searchTerm, setSearchTerm] = useState('');
+
 
   const handleAddProduct = () => {
     setShowModal(true);
@@ -156,7 +157,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <img onClick={handleLogout} alt={""} className="w-6 text-black m-1" />
+        <img src='/exit.svg' onClick={handleLogout} alt={""} className="w-5 text-black m-1" />
         </div>
 
 
