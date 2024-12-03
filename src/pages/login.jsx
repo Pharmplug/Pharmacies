@@ -15,7 +15,7 @@ export const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:3000/api/pharmacy/login', {
+      const response = await axios.post('https://api-pharmplug.onrender.com/api/pharmacy/login', {
         email,
         password
       });
