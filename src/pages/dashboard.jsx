@@ -67,18 +67,18 @@ export const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [products] = useState([
-    { id: 1, img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 2,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 3,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 4,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 5,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 6,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 7,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 8,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 9,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 10,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 11,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-    { id: 12,img:'/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 1, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 2, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 3, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 4, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 5, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 6, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 7, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 8, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 9, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 10, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 11, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
+  //   { id: 12, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
   ]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState('');
@@ -225,123 +225,145 @@ export const Dashboard = () => {
             </Button>
           </div>
         </div>
-
-        <div className="p-4">
-          <table className="w-full border-collapse border border-gray-300">
-            <thead className=''>
-              <tr className="bg-gray-100 w-full items-center ">
-                <th className="p-2 text-sm font-normal">
-                  <input type="checkbox" />
-                </th>
-                <th className="items-center p-4 text-sm font-normal">
-                  <div className='flex items-center'>
-                    <img src="/p.svg" alt="Package" className="w-5 mr-4 text-gray-400" />
-                    <p>Products</p>
-                  </div>
-
-                </th>
-                <th className="text-start p-2 text-sm font-normal">
-                  <span>Product Category</span>
-                </th>
-                <th className=" items-start text-sm font-normal">
-                  <p className='text-start'>Pricing</p>
-                </th>
-                <th className="items-center p-2 text-sm font-normal">
-                  <div className='flex items-center'>
-                    <img src="/calender.svg" alt="Package" className="w-4 mr-4 text-black" />
-                    <span>Date Created</span>
-                  </div>
-
-
-                </th>
-                <th className="items-center p-2 text-sm font-normal">
-                  <div className='flex items-center'>
-                    <img src="/calender.svg" alt="Package" className="w-4 mr-4 text-black" />
-                    <span>Date Updated</span>
-                  </div>
-                </th>
-                <th className="text-start p-2 text-sm font-normal">
-                  <span>Brand</span>
-                </th>
-                <th className="text-start p-2 text-sm font-normal">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((filteredProduct) => (
-                <tr
-                  key={filteredProduct.id}
-                  className="hover:bg-gray-50 cursor-pointer"
-                  onClick={() => {
-                    handleUpdateProduct(filteredProduct)
-                    //alert(`Clicked on product ID: ${filteredProducts.id}`)
-                  }}
-                >
-                  <td className="p-2">
-                    <input type="checkbox" />
-                  </td>
-                  <td className="p-2  flex items-center space-x-2">
-                    <div className=" flex items-center ">
-                    <img src="/imgHolder.svg" alt="Package" className=" mr-4 w-8 h-8  rounded" />
-                    </div>
-                    <span className='text-xs text-black'>{filteredProduct.name}</span>
-                  </td>
-                  <td className="p-2 ">
-                    <span className="px-2 py-1 text-xs text-main bg-[#CDEFF5] rounded-full">
-                      • {filteredProduct.category}
-                    </span>
-                  </td>
-                  <td className="p-2  text-sm font-thin text-[#667185]">₦{filteredProduct.price.toLocaleString()}</td>
-                  <td className="p-2  text-sm font-thin text-[#667185]">{filteredProduct.dateCreated}</td>
-                  <td className="p-2  text-sm font-thin text-[#667185]">{filteredProduct.dateUpdated}</td>
-                  <td className="p-2 text-sm font-thin text-[#667185]">{filteredProduct.brand}</td>
-                  <td className="p-2 flex space-x-2">
-                    <button className="text-blue-500 hover:underline">
-                      <img src="/info.svg" alt={""} className="w-4 text-black m-1" />
-                    </button>
-                    <button className="text-red-500 hover:underline">
-                      <img src="/bin.svg" alt={""} className="w-4 text-black m-1" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className="px-3 py-1  bg-transparent border  border-gray-400 text-xs rounded disabled:opacity-50"
-              onClick={handlePrevious}
-              disabled={currentPage === 1}
+        {products.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
+            <img
+              src="/p.svg"
+              alt="No products"
+              className="w-64 h-64 mb-4"
+            />
+            <h2 className="text-xl text-gray-600 mb-2">No Products Yet</h2>
+            <p className="text-gray-900 mb-6 font-thin">Click "Add Product" to get started</p>
+            <Button
+              className="bg-[#06B1CF] text-white hover:bg-[#13aeb9] font-thin rounded-[8px] px-6 py-2"
+              onClick={handleAddProduct}
             >
-              Previous
-            </button>
-            <div className="flex space-x-2">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`px-3 py-1 rounded ${currentPage === index + 1
-                    ? "bg-transparent border border-secondary border-[1.5px] text-gray-600 text-xs font-normal"
-                    : "bg-transparent text-gray-400 text-xs "
-                    }`}
-                  onClick={() => handlePageClick(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-            <button
-              className="px-3 py-1 bg-transparent border  border-gray-400 text-xs rounded disabled:opacity-50"
-              onClick={handleNext}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
+              <div className='flex items-center'>
+                <Plus className="text-white mr-2" size={16} />
+                Add First Product
+              </div>
+            </Button>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="p-4">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead className=''>
+                  <tr className="bg-gray-100 w-full items-center ">
+                    <th className="p-2 text-sm font-normal">
+                      <input type="checkbox" />
+                    </th>
+                    <th className="items-center p-4 text-sm font-normal">
+                      <div className='flex items-center'>
+                        <img src="/p.svg" alt="Package" className="w-5 mr-4 text-gray-400" />
+                        <p>Products</p>
+                      </div>
 
+                    </th>
+                    <th className="text-start p-2 text-sm font-normal">
+                      <span>Product Category</span>
+                    </th>
+                    <th className=" items-start text-sm font-normal">
+                      <p className='text-start'>Pricing</p>
+                    </th>
+                    <th className="items-center p-2 text-sm font-normal">
+                      <div className='flex items-center'>
+                        <img src="/calender.svg" alt="Package" className="w-4 mr-4 text-black" />
+                        <span>Date Created</span>
+                      </div>
+
+
+                    </th>
+                    <th className="items-center p-2 text-sm font-normal">
+                      <div className='flex items-center'>
+                        <img src="/calender.svg" alt="Package" className="w-4 mr-4 text-black" />
+                        <span>Date Updated</span>
+                      </div>
+                    </th>
+                    <th className="text-start p-2 text-sm font-normal">
+                      <span>Brand</span>
+                    </th>
+                    <th className="text-start p-2 text-sm font-normal">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItems.map((filteredProduct) => (
+                    <tr
+                      key={filteredProduct.id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() => {
+                        handleUpdateProduct(filteredProduct)
+                        //alert(`Clicked on product ID: ${filteredProducts.id}`)
+                      }}
+                    >
+                      <td className="p-2">
+                        <input type="checkbox" />
+                      </td>
+                      <td className="p-2  flex items-center space-x-2">
+                        <div className=" flex items-center ">
+                          <img src="/imgHolder.svg" alt="Package" className=" mr-4 w-8 h-8  rounded" />
+                        </div>
+                        <span className='text-xs text-black'>{filteredProduct.name}</span>
+                      </td>
+                      <td className="p-2 ">
+                        <span className="px-2 py-1 text-xs text-main bg-[#CDEFF5] rounded-full">
+                          • {filteredProduct.category}
+                        </span>
+                      </td>
+                      <td className="p-2  text-sm font-thin text-[#667185]">₦{filteredProduct.price.toLocaleString()}</td>
+                      <td className="p-2  text-sm font-thin text-[#667185]">{filteredProduct.dateCreated}</td>
+                      <td className="p-2  text-sm font-thin text-[#667185]">{filteredProduct.dateUpdated}</td>
+                      <td className="p-2 text-sm font-thin text-[#667185]">{filteredProduct.brand}</td>
+                      <td className="p-2 flex space-x-2">
+                        <button className="text-blue-500 hover:underline">
+                          <img src="/info.svg" alt={""} className="w-4 text-black m-1" />
+                        </button>
+                        <button className="text-red-500 hover:underline">
+                          <img src="/bin.svg" alt={""} className="w-4 text-black m-1" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Pagination */}
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  className="px-3 py-1  bg-transparent border  border-gray-400 text-xs rounded disabled:opacity-50"
+                  onClick={handlePrevious}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                <div className="flex space-x-2">
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                      key={index + 1}
+                      className={`px-3 py-1 rounded ${currentPage === index + 1
+                        ? "bg-transparent border border-secondary border-[1.5px] text-gray-600 text-xs font-normal"
+                        : "bg-transparent text-gray-400 text-xs "
+                        }`}
+                      onClick={() => handlePageClick(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  className="px-3 py-1 bg-transparent border  border-gray-400 text-xs rounded disabled:opacity-50"
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+
+
+          </>
+        )}
       </div>
-
       <Modal open={showModal} onClose={handleCloseModal}>
         <ModalHeader>
           <div className="flex items-center justify-between">
