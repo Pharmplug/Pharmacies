@@ -7,13 +7,14 @@ module.exports = {
     extend: {
       colors: {
         'main':'#06B1CF',
+        'text-color':'#667185',
         'secondary':'#8CD50A',
         'brand-teal': '#00A896',
         'brand-navy': '#022B3A',
       },
       fontFamily: {
         // Add custom font families
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'sans': ['Barlow', 'system-ui', 'sans-serif'],
       },
       spacing: {
         // Add custom spacing

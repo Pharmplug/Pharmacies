@@ -1,148 +1,187 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import * as Yup from 'yup';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { storeAuthToken, storeData } from '../utils/storage';
+import { delay } from '../utils/utils';
+
+
 
 export const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  // Validation schema
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Invalid email address')
+      .required('Email is required'),
+    password: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Password is required')
+  });
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
+
+  const handleLogin = async (values) => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('https://api-pharmplug.onrender.com/api/pharmacy/login', {
-        email,
-        password
+      const response = await axios.post('https://api-pharmplug.onrender.com/api/pharmacy/login', values, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Request-Source': 'web-login'
+        }
       });
 
       if (response.data.statusCode === 200) {
-        // Store authentication token securely
-        localStorage.setItem('authToken', response.data.data.token);
 
-        // Store pharmacy data in encrypted local storage
-        const encryptedPharmacyData = encryptData(response.data.data.pharmacy);
-        localStorage.setItem('pharmacyData', encryptedPharmacyData);
+        storeAuthToken(response.data.data.token);
 
-        // Optional: Store in more secure storage for web
-        if (window.sessionStorage) {
-          sessionStorage.setItem('isAuthenticated', 'true');
-        }
-
-        // Redirect to dashboard
+        storeData(JSON.stringify(response.data.data.pharmacy));
+        setShowSuccessAlert(true)
+        await delay(2000); // Wait for 2 seconds before continuing
         navigate('/dashboard');
+
       }
     } catch (error) {
-      // Handle login errors
-      setError(error.response?.data?.message || 'Login failed. Please try again.');
-      console.error('Login error:', error);
+      // Centralized error handling
+      const errorMessage = error.response?.data?.message || 'Login failed';
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Simple encryption function (for client-side protection)
-  const encryptData = (data) => {
-    return btoa(JSON.stringify(data));
-  };
-
-  // Decryption function
-  // const decryptData = (encryptedData) => {
-  //   try {
-  //     return JSON.parse(atob(encryptedData));
-  //   } catch {
-  //     return null;
-  //   }
-  // };
-
   return (
-    <div className="flex h-screen">
-      <div className="bg-[#15c2cf] flex-3 flex items-center justify-center">
-        <img src="/medical-cart.svg" alt="Medical Cart" className="max-w-[600px]" />
+    <div className="flex min-h-screen bg-gradient-to-br from-[#15c2cf] to-[#06B1CF]">
+      <div className="hidden md:flex flex-1 items-center justify-center">
+        <img
+          src="/medical-cart.svg"
+          alt="PharmPlug Dashboard"
+          className="max-w-md animate-pulse"
+        />
       </div>
-      <div className="bg-[#CDEFF5] flex-1 flex items-center justify-center">
-        <div className="bg-white w-full max-w-[400px] px-6 py-4 shadow-lg rounded-[24px] flex flex-col items-center justify-center">
-          <img src="/logo.svg" alt="Logo" className="w-64 mb-20" />
-          <form onSubmit={handleLogin} className="w-full">
-          <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-sm">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="youremail@gmail.com"
-                required
-                className="w-full border border-gray-300 text-sm font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
-              />
-            </div>
-            <div className="mb-6">
-              <label htmlFor="password" className="block text-gray-600 font-normal mb-1 text-sm">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-                className="w-full mb-8 border border-gray-300 text-sm font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
-              />
-            </div>
 
-            {error && (
-              <div className="text-red-500 text-sm mb-4 text-center">
-                {error}
-              </div>
-            )}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-[#06B1CF] mb-4 text-white py-2 px-6 rounded-[100px] font-thin hover:bg-[#13aeb9] focus:outline-none focus:ring-2 focus:ring-[#15c2cf] 
-              flex items-center justify-center
-              disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <div className="flex items-center">
-                  <svg 
-                    className="animate-spin h-5 w-5 mr-3" 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
-                    viewBox="0 0 24 24"
-                  >
-                    <circle 
-                      className="opacity-25" 
-                      cx="12" 
-                      cy="12" 
-                      r="10" 
-                      stroke="currentColor" 
-                      strokeWidth="4"
-                    ></circle>
-                    <path 
-                      className="opacity-75" 
-                      fill="currentColor" 
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Logging In...
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
+          {showSuccessAlert && (
+            <div className="fixed top-4 right-4 w-96 bg-green-100 border border-green-200 rounded-lg p-4 z-50">
+              <p className="text-green-800">
+                Login successfully! Welcome.
+              </p>
+            </div>
+          )}
+          <div className="text-center mb-8">
+            <img
+              src="/logo.svg"
+              alt="PharmPlug Logo"
+              className="mx-auto mb-4 w-48"
+            />
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Welcome Back
+            </h2>
+          </div>
+
+          <Formik
+            initialValues={{ email: '', password: '' }}
+            validationSchema={LoginSchema}
+            onSubmit={handleLogin}
+          >
+            {({ errors, touched }) => (
+              <Form className="space-y-4">
+                <div className='flex flex-col space-y-2'>
+                  <div className="flex items-center border rounded-lg ">
+                    <Mail className=" text-gray-300 w-8 ml-2" />
+                    <Field
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      className={`w-full bg-white pl-1 pr-4 py-3 font-thin focus:bg-white focus:outline-none 
+                      ${errors.email && touched.email
+                          ? 'border-red-500'
+                          : 'border-gray-300'}`}
+                      prefix={<Mail className="text-gray-400" />}
+                    />
+                  </div>
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500 text-[10px] font-normal"
+                  />
                 </div>
-              ) : (
-                'Log In'
-              )}
-            </button>
-          </form>
-          <p className="mb-8 text-xs font-thin text-gray-400">
+                <div className='flex flex-col space-y-2'>
+                  <div className="flex items-center border rounded-lg ">
+                    <Lock className="ml-2 mr2 text-gray-400 w-5" />
+                    <Field
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className={`w-full pl-2 pr-1 py-3 font-thin focus:outline-none 
+                      ${errors.password && touched.password
+                          ? 'border-red-500'
+                          : 'border-gray-300'}`}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="mr-2"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+
+                  </div>
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-red-900 text-sm font-thin"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-[#06B1CF] text-white py-3 rounded-lg 
+                    hover:bg-[#15c2cf] transition-colors 
+                    disabled:opacity-50 flex items-center justify-center"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center">
+                      <svg
+                        className="animate-spin h-5 w-5 mr-3"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Logging In...
+                    </div>
+                  ) : (
+                    'Log In'
+                  )}
+                </button>
+              </Form>
+            )}
+          </Formik>
+
+          <div className="text-center mt-6 text-xs text-gray-500">
             © {new Date().getFullYear()} PharmPlug. All Rights Reserved.
-          </p>
+          </div>
         </div>
       </div>
     </div>

@@ -1,89 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapPin, Plus, XIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Input } from '../components/input';
+import { Button } from '../components/button';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '../components/modal';
+import { convertToFormattedDate } from '../utils/time-converter';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { delay } from '../utils/utils';
+import useImagePicker from '../hook/upload_image';
 
 
-// Local component implementations to replace @components
-const Modal = ({ open, children }) => {
-  if (!open) return null;
-  return (
-    <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-[600px]">
-        {children}
-      </div>
-    </div>
-  );
-};
-
-const ModalHeader = ({ children }) => (
-  <div className="p-6">
-    {children}
-  </div>
-);
-
-const ModalBody = ({ children }) => (
-  <div className="p-6">
-    {children}
-  </div>
-);
-
-const ModalFooter = ({ children }) => (
-  <div className="p-6 ">
-    {children}
-  </div>
-);
-
-
-
-
-const Input = ({ type, placeholder, value, onChange, className }) => (
-  <input
-    type={type}
-    placeholder={placeholder}
-    value={value}
-    onChange={onChange}
-    className={`w-full rounded-lg border ${className}`}
-  />
-);
-
-const Button = ({ children, onClick, className, variant }) => {
-  const baseClasses = "px-6 py-3 rounded-[100px] font-thin transition-colors";
-  const variantClasses = variant === "secondary"
-    ? "bg-white text-[#15c2cf] hover:bg-gray-100"
-    : "bg-[#15c2cf] text-white hover:bg-[#13aeb9]";
-
-  return (
-    <button
-      onClick={onClick}
-      className={`${baseClasses} ${variantClasses} ${className}`}
-    >
-      {children}
-    </button>
-  );
-};
 
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [products] = useState([
-  //   { id: 1, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 2, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 3, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 4, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 5, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 6, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 7, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 8, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 9, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 10, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 11, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  //   { id: 12, img: '/imgHolder.svg', name: "Triple Action Toothpaste", category: "Tooth Care", price: 6700, dateCreated: "02 May 2024", dateUpdated: "02 May 2024", brand: "Sensodyne" },
-  ]);
+  const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState('');
+  const [pharmacyData, setPharmacyData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const { selectedImage,setBase64Image,setSelectedImage, base64Image, handleImageChange } = useImagePicker();
   const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -126,10 +68,7 @@ export const Dashboard = () => {
   const handleCloseUpdateModal = () => {
     setShowUpdateModal(false);
   };
-  const handleSave = (e) => {
-    // e.preventDefault();
-    setShowModal(false);
-  };
+
   const handleUpdate = (e) => {
     // e.preventDefault();
     setShowUpdateModal(false);
@@ -140,9 +79,125 @@ export const Dashboard = () => {
   };
 
 
+
+  useEffect(() => {
+    const storedPharmacyData = sessionStorage.getItem('pharmacy-data');
+    if (storedPharmacyData) {
+      try {
+        const parsedData = JSON.parse(storedPharmacyData);
+        // Add a check to ensure the data is valid
+        if (parsedData && parsedData.name) {
+          setPharmacyData(parsedData);
+        } else {
+          console.error('Invalid pharmacy data');
+        }
+      } catch (error) {
+        console.error('Error parsing pharmacy data:', error);
+      }
+    }
+  }, []);
+  const getProducts = async (id) => {
+
+    try {
+      const response = await axios.get(`https://api-pharmplug.onrender.com/api/store/get-product-by-pharmacy/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Request-Source': 'web-login'
+        }
+      });
+
+      if (response.data.statusCode === 200) {
+        console.log(response.data.data);
+        setProducts(response.data.data);
+        setShowSuccessAlert(false)
+      }
+    } catch (error) {
+      // Centralized error handling
+      const errorMessage = error.response?.data?.message || 'Login failed';
+      alert(errorMessage);
+    } finally {
+
+    }
+  };
+  let imageurl = "https://i.ibb.co/C55nTnk/eb0692a88bf3.png";
+  useEffect(() => {
+    if (pharmacyData && pharmacyData.id) {
+      getProducts(pharmacyData.id);
+    }
+  }, [pharmacyData]);
+
+  const ProductSchema = Yup.object().shape({
+    category: Yup.string().required('Category is required'),
+    price: Yup.number()
+      .positive('Price must be positive')
+      .required('Price is required'),
+    productName: Yup.string()
+      .min(2, 'Product name too short')
+      .required('Product name is required'),
+    packSize: Yup.string().required('Pack size is required'),
+    dosageForm: Yup.string().required('Dosage form is required'),
+    companyName: Yup.string().required('Company name is required'),
+    productCode: Yup.string().required('Product code is required')
+  });
+  const handleSubmitProduct = async (values) => {
+    setIsLoading(true);
+    values["pharmacyCode"] = pharmacyData.id;
+    values["price"] = values["price"].toString();
+    values["image"] = base64Image;
+    console.log(base64Image)
+    if (base64Image ===null) {
+      values["image"] = imageurl;
+    }
+
+
+    try {
+      const response = await axios.post('https://api-pharmplug.onrender.com/api/store/add-product', values, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Request-Source': 'web-login'
+        }
+      });
+
+      console.log(response.data); // Debug: Log the entire response for verification
+
+      // Check both HTTP status and response statusCode
+      if (response.status === 200 && response.data.statusCode === 200) {
+        console.log("Product added successfully!");
+        setShowSuccessAlert(true)
+        setSelectedImage(null)
+        setBase64Image(null)
+        await delay(2000);
+
+        getProducts(pharmacyData.id);
+        handleCloseModal()
+
+      } else {
+        const errorMessage = response.data.message || 'Failed to add product.';
+        alert(errorMessage);
+      }
+    } catch (error) {
+      // Handle network or server errors
+      const errorMessage = error.response?.data?.message || 'Login failed';
+      alert(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
+
   return (
     <div className="flex h-screen">
       <div className="bg-[#06B1CF] w-64 flex flex-col justify-between items-center py-8 px-2">
+
+        {showSuccessAlert && (
+          <div className="fixed top-4 right-4 w-96 bg-green-100 border border-green-200 rounded-lg p-4 z-50">
+            <p className="text-green-800">
+              Product Added successfully!.
+            </p>
+          </div>
+        )}
         <div className='items-center w-full'>
           <div className="bg-white  rounded-[3px] w-full">
             <img src="/logo.svg" alt={""} className="w-32 h-12 my-2" />
@@ -159,14 +214,14 @@ export const Dashboard = () => {
         <div className='flex items-center justify-between w-full'>
           <div className='flex items-center'>
             <div className='border border-white bg-[#8CD50A] rounded-[100px] mr-1'>
-              <img src="/package.png" alt={""} className="w-6 text-black m-1" />
+              <img src={pharmacyData?.logo || '/p.svg'} alt={""} className="w-6 text-black m-1" />
             </div>
 
             <div>
-              <h1 className="text-xs font-normal text-white mb-1">HealthRite</h1>
+              <h1 className="text-xs font-normal text-white mb-1"> {pharmacyData?.name || 'Pharmacy Name'}</h1>
               <div className='flex items-center'>
                 <MapPin className="text-white mr-1" size={12} />
-                <p className='text-[10px] font-normal text-white'>Ikoyi,Lagos</p>
+                <p className='text-[10px] font-normal text-white'>  {pharmacyData?.city || 'Pharmacy City'},  {pharmacyData?.state || 'Pharmacy State'}</p>
               </div>
             </div>
           </div>
@@ -181,14 +236,14 @@ export const Dashboard = () => {
           <p></p>
           <div className='flex items-center'>
             <div className='border border-white bg-[#8CD50A] rounded-[100px] mr-1'>
-              <img src="/package.png" alt={""} className="w-6 text-black m-1" />
+              <img src={pharmacyData?.logo || '/p.svg'} alt={""} className="w-6 text-black m-1" />
             </div>
 
             <div>
-              <h1 className="text-xs font-normal text-black mb-1">HealthRite</h1>
+              <h1 className="text-xs font-normal text-black mb-1">  {pharmacyData?.name || 'Pharmacy Name'}</h1>
               <div className='flex items-center'>
                 <MapPin className="text-[#8CD50A] mr-1" size={12} />
-                <p className='text-[10px] font-normal text-[#8CD50A]'>Ikoyi,Lagos</p>
+                <p className='text-[10px] font-normal text-[#8CD50A]'>  {pharmacyData?.city || 'Pharmacy City'},  {pharmacyData?.state || 'Pharmacy State'}</p>
               </div>
             </div>
           </div>
@@ -199,7 +254,7 @@ export const Dashboard = () => {
         </div>
         <div className='flex justify-between items-center px-4 mb-8'>
           <div className='bg-[#8CD50A] rounded-[4px] py-2 px-4'>
-            <p className='text-white text-xs'>10,800 Total Products</p>
+            <p className='text-white text-xs'>{filteredProducts.length} Total Products</p>
           </div>
 
           <div className='flex items-center space-x-4 max-w-[600px] w-full'>
@@ -301,19 +356,19 @@ export const Dashboard = () => {
                       </td>
                       <td className="p-2  flex items-center space-x-2">
                         <div className=" flex items-center ">
-                          <img src="/imgHolder.svg" alt="Package" className=" mr-4 w-8 h-8  rounded" />
+                          <img src={filteredProduct.image_url} alt="Package" className=" mr-4 w-8 h-8  rounded" />
                         </div>
-                        <span className='text-xs text-black'>{filteredProduct.name}</span>
+                        <span className='text-xs text-black'>{filteredProduct.product_name}</span>
                       </td>
                       <td className="p-2 ">
                         <span className="px-2 py-1 text-xs text-main bg-[#CDEFF5] rounded-full">
                           • {filteredProduct.category}
                         </span>
                       </td>
-                      <td className="p-2  text-sm font-thin text-[#667185]">₦{filteredProduct.price.toLocaleString()}</td>
-                      <td className="p-2  text-sm font-thin text-[#667185]">{filteredProduct.dateCreated}</td>
-                      <td className="p-2  text-sm font-thin text-[#667185]">{filteredProduct.dateUpdated}</td>
-                      <td className="p-2 text-sm font-thin text-[#667185]">{filteredProduct.brand}</td>
+                      <td className="p-2  text-sm font-normal text-[#667185]">₦{filteredProduct.price.toLocaleString()}</td>
+                      <td className="p-2  text-sm font-normal text-[#667185]">{convertToFormattedDate(filteredProduct.created_at)}</td>
+                      <td className="p-2  text-sm font-normal text-[#667185]"> {convertToFormattedDate(filteredProduct.updated_at)}</td>
+                      <td className="p-2 text-sm font-normal text-[#667185]">{filteredProduct.company_name}</td>
                       <td className="p-2 flex space-x-2">
                         <button className="text-blue-500 hover:underline">
                           <img src="/info.svg" alt={""} className="w-4 text-black m-1" />
@@ -380,92 +435,137 @@ export const Dashboard = () => {
           </div>
         </ModalHeader>
         <ModalBody>
-          <form onSubmit={handleSave} className="w-full">
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-xs">
-                Product Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter product name"
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-xs">
-                Product Category
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter product category"
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
-              />
-            </div> <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-xs">
-                Brand
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter product brand"
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-xs">
-                Price
-              </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                placeholder="Enter product price"
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
-            </div>
-            <div className='flex items-center justify-between mt-8'>
-              <div className='flex items-center'>
-                <div className='bg-gray-200 rounded-[100px] p-2 mr-2'>
-                  <img src="/upload.svg" alt={""} className='text-white w-5' />
+          <Formik
+            initialValues={{
+              category: '',
+              price: '',
+              productName: '',
+              packSize: '',
+              dosageForm: '',
+              companyName: '',
+              productCode: ''
+            }}
+            validationSchema={ProductSchema}
+            onSubmit={handleSubmitProduct}
+          >
+            {({ errors, touched }) => (
+              <Form className="space-y-4 w-full">
+                {[
+                  { name: 'category', label: 'Category', type: 'text' },
+                  { name: 'price', label: 'Price', type: 'number' },
+                  { name: 'productName', label: 'Product Name', type: 'text' },
+                  { name: 'packSize', label: 'Pack Size', type: 'text' },
+                  { name: 'dosageForm', label: 'Dosage Form', type: 'text' },
+                  { name: 'companyName', label: 'Company Name', type: 'text' },
+                  { name: 'productCode', label: 'Product Code', type: 'text' }
+
+                ].map(({ name, label, type }) => (
+                  <div key={name} className="flex flex-col space-y-2">
+                    <div className="items-center ">
+                      <label htmlFor={label} className="block text-gray-600 font-normal mb-1 text-xs">
+                        {label}
+                      </label>
+                      <Field
+                        name={name}
+                        type={type}
+                        placeholder={`Enter ${label.toLowerCase()}`}
+                        className={`w-full bg-white text-xs  border border-gray-300 rounded-lg pl-2 pr-4 py-3 font-thin focus:bg-white focus:outline-none 
+                    ${errors[name] && touched[name] ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                    </div>
+                    <ErrorMessage
+                      name={name}
+                      component="div"
+                      className="text-red-500 text-[10px] font-normal"
+                    />
+                  </div>
+                ))}
+
+                <div className='flex items-center justify-between py-4'>
+                  <div className='flex items-center'>
+                    <div className='bg-gray-200 rounded-[100px] p-2 mr-2'>
+                      {/* Invisible input */}
+                      <input
+                        type="file"
+                        onChange={handleImageChange}
+                        className="hidden" // Hides the input but keeps it functional
+                        accept="image/*"  // Restrict file types (optional)
+                      />
+                      {/* Clickable div that triggers file input */}
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => document.querySelector('input[type="file"]').click()} // Trigger file input click
+                      >
+                        <img
+                          src={selectedImage || "/upload.svg"}
+                          alt="Upload"
+                          className='text-white w-5'
+                        />
+                      </div>
+                    </div>
+                    <div className='items-center'>
+                      <p className='font-normal text-xs text-black mb-1'>Upload your document</p>
+                      <p className='font-thin text-[8px] text-gray-400'>PNG, JPG, JPEG Format. Max 5MB</p>
+                    </div>
+                  </div>
+                  <button
+                    className={`${base64Image ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#06B1CF] hover:bg-[#13aeb9]'} text-white font-thin px-8 py-1 rounded-[5px]`}
+                    disabled={!!base64Image} // Disable button if base64Image is set
+                  >
+                    {base64Image ? "Uploaded" : "Upload"}
+                  </button>
+
 
                 </div>
-                <div className='items-center'>
-                  <p className='font-normal text-xs text-black mb-1'>Upload your document</p>
-                  <p className='font-thin text-[8px] text-gray-400'>PNG,JPG,JPEG Format . Max 5MB</p>
+                <div className="flex justify-center space-x-6 mt-8">
+                  <button
+                    variant="secondary"
+                    className="bg-white border border-[#15c2cf] text-[#15c2cf] hover:bg-gray-100 font-thin px-6 py-2 rounded-[5px]"
+                    onClick={handleCloseModal}
+                  >
+                    Cancel
+                  </button>
+                  <button
+
+                    type="submit"
+                    //disabled={isLoading}
+                    className="bg-[#06B1CF]  text-white hover:bg-[#13aeb9] font-thin px-8 py-2 rounded-[5px] shadow-lg"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Saving...
+                      </div>
+                    ) : (
+                      'Save'
+                    )}
+                  </button>
                 </div>
-              </div>
-              <button
-                className="bg-[#06B1CF] text-white hover:bg-[#13aeb9] font-thin px-8 py-1 rounded-[5px]"
-              >
-                Upload
-              </button>
 
-            </div>
-
-          </form>
+              </Form>
+            )}
+          </Formik>
         </ModalBody>
-        <ModalFooter>
-          <div className="flex justify-center space-x-6">
-            <button
-              variant="secondary"
-              className="bg-white border border-[#15c2cf] text-[#15c2cf] hover:bg-gray-100 font-thin px-6 py-1 rounded-[5px]"
-              onClick={handleCloseModal}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleCloseModal}
-              className="bg-[#06B1CF] text-white hover:bg-[#13aeb9] font-thin px-8 py-1 rounded-[5px]"
-            >
-              Save
-            </button>
-          </div>
-        </ModalFooter>
+
       </Modal>
 
 
@@ -495,8 +595,8 @@ export const Dashboard = () => {
                 id="name"
                 name="name"
 
-                placeholder={selectedProduct.name}
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
+                placeholder={selectedProduct.product_name}
+                className="w-full border border-gray-300 text-black text-xs font-light font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
               />
             </div>
             <div className="mb-4">
@@ -508,7 +608,7 @@ export const Dashboard = () => {
                 id="name"
                 name="name"
                 placeholder={selectedProduct.category}
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
+                className="w-full border border-gray-300 text-black text-xs font-light px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
               />
             </div> <div className="mb-4">
               <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-xs">
@@ -518,12 +618,12 @@ export const Dashboard = () => {
                 type="text"
                 id="name"
                 name="name"
-                placeholder={selectedProduct.brand}
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
+                placeholder={selectedProduct.company_name}
+                className="w-full border border-gray-300 text-black text-xs font-light px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf]"
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-600 font-normal mb-1 text-xs">
+              <label htmlFor="email" className="block text-black font-light mb-1 text-xs">
                 Price
               </label>
               <input
@@ -531,11 +631,11 @@ export const Dashboard = () => {
                 id="price"
                 name="price"
                 placeholder={selectedProduct.price}
-                className="w-full border border-gray-300 text-xs font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-full border border-gray-300 text-black text-xs font-light font-thin px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#15c2cf] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
             <div className='flex items-center justify-between mt-8'>
-              <img src={selectedProduct.img} alt={""} className='rounded-lg w-24 h-24' />
+              <img src={selectedProduct.image_url} alt={""} className='rounded-lg w-24 h-24' />
               <div className='flex items-center'>
                 <div className='bg-gray-200 rounded-[100px] p-1.5 mr-2'>
                   <img src="/upload.svg" alt={""} className='text-white w-4' />
