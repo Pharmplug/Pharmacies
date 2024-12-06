@@ -178,7 +178,7 @@ export const Dashboard = () => {
       }
     } catch (error) {
       // Handle network or server errors
-      const errorMessage = error.response?.data?.message || 'Login failed';
+      const errorMessage = error.response?.data?.message || 'Upload failed';
       alert(errorMessage);
     } finally {
       setIsLoading(false);
