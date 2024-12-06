@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { MapPin, Plus, XIcon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Input } from '../../components/input';
 import { Button } from '../../components/button';
@@ -10,7 +9,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { delay } from '../../utils/utils';
 import useImagePicker from '../../hook/upload_image';
-import { Sidebar } from '../../components/sidebar';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -74,11 +73,6 @@ export const Dashboard = () => {
     // e.preventDefault();
     setShowUpdateModal(false);
   };
-  const handleLogout = (e) => {
-    // e.preventDefault();
-    navigate('/login');
-  };
-
 
 
   useEffect(() => {
@@ -113,9 +107,8 @@ export const Dashboard = () => {
         setShowSuccessAlert(false)
       }
     } catch (error) {
-      // Centralized error handling
-      const errorMessage = error.response?.data?.message || 'Login failed';
-      alert(errorMessage);
+ 
+  
     } finally {
 
     }
@@ -125,7 +118,7 @@ export const Dashboard = () => {
     if (pharmacyData && pharmacyData.id) {
       getProducts(pharmacyData.id);
     }
-  }, [pharmacyData]);
+  }, [pharmacyData,getProducts]);
 
   const ProductSchema = Yup.object().shape({
     category: Yup.string().required('Category is required'),
@@ -152,7 +145,7 @@ export const Dashboard = () => {
 
 
     try {
-      const response = await axios.post('https://api-pharmplug.onrender.com/api/store/add-product', values, {
+      const response = await axios.post('http://localhost:3000/api/store/add-product', values, {
         headers: {
           'Content-Type': 'application/json',
           'X-Request-Source': 'web-login'
@@ -186,12 +179,14 @@ export const Dashboard = () => {
   };
 
 
-
+  const handleLogout = () => {
+    navigate('/login');
+  };
 
   return (
     <div className="flex h-screen">
-      <Sidebar/>
-      {/* <div className="bg-[#06B1CF] w-64 flex flex-col justify-between items-center py-8 px-2">
+   
+      <div className="bg-[#06B1CF] w-64 flex flex-col justify-between items-center py-8 px-2">
 
         {showSuccessAlert && (
           <div className="fixed top-4 right-4 w-96 bg-green-100 border border-green-200 rounded-lg p-4 z-50">
@@ -232,7 +227,7 @@ export const Dashboard = () => {
         </div>
 
 
-      </div> */}
+      </div>
       <div className="flex-1 bg-white relative">
         <div className=" bg-[#CDEFF5] px-8 py-4 flex items-center justify-between mb-4">
           <p></p>
