@@ -12,3 +12,11 @@ export const storeAuthToken = (token) => {
     // Implement additional security measures like encryption
   };
   
+
+  export const retrieveData =() => {
+    // Use more secure storage methods
+ const  userData=  sessionStorage.getItem('pharmacy-data');
+   return JSON.parse(userData)
+    // Implement additional security measures like encryption
+  };
+  

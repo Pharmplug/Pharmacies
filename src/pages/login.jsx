@@ -6,10 +6,13 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { storeAuthToken, storeData } from '../utils/storage';
 import { delay } from '../utils/utils';
+import { baseurl } from '../config/config';
+
 
 
 
 export const Login = () => {
+  console.log(baseurl)
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +32,7 @@ export const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('https://api-pharmplug.onrender.com/api/pharmacy/login', values, {
+      const response = await axios.post(`${baseurl}/api/pharmacy/login`, values, {
         headers: {
           'Content-Type': 'application/json',
           'X-Request-Source': 'web-login'
