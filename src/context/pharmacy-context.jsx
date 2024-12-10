@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import { retrieveData } from '../utils/storage';
 
 const PharmacyContext = createContext(null);
